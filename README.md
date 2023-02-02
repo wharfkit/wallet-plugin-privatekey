@@ -1,13 +1,30 @@
-# @wharfkit/wallet-plugin-template
+# @wharfkit/wallet-plugin-privatekey
 
-A template to create a `WalletPlugin` for use within the `@wharfkit/session` library.
+A @wharfkit/session WalletPlugin implementation that takes a private key and blindly signs transactions.
+
+Primarily designed to be used in controlled environments (such as server side applications) or for testing purposes.
 
 ## Usage
 
--   [Use this as a template.](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
--   Write your wallet plugin's logic.
--   Publish it on Github or npmjs.com
--   Include it in your project and use it.
+```ts
+import {Session} from '@wharfkit/session'
+import {WalletPluginPrivateKey} from '@wharfkit/wallet-plugin-privatekey'
+
+// Establish a session and include the wallet plugin
+const session = new Session({
+    // ... other options
+    walletPlugin: new WalletPluginPrivateKey({
+        privateKey: '5Jtoxgny5tT7NiNFp1MLogviuPJ9NniWjnU4wKzaX4t7pL4kJ8s',
+    }),
+})
+
+// Calling transact will use this plugin to automatically sign with the provided key
+const result = session.transact({
+    actions: [
+        // your actions
+    ],
+})
+```
 
 ## Developing
 

@@ -1,7 +1,7 @@
 import {assert} from 'chai'
 import {PermissionLevel, SessionKit} from '@wharfkit/session'
 
-import {WalletPluginTEMPLATE} from '$lib'
+import {WalletPluginPrivateKey} from '$lib'
 import {mockFetch} from '$test/utils/mock-fetch'
 
 const mockChainDefinition = {
@@ -11,11 +11,17 @@ const mockChainDefinition = {
 
 const mockPermissionLevel = PermissionLevel.from('wharfkit1115@test')
 
+const mockPrivateKey = '5Jtoxgny5tT7NiNFp1MLogviuPJ9NniWjnU4wKzaX4t7pL4kJ8s'
+
 const mockSessionKitOptions = {
     appName: 'unittests',
     chains: [mockChainDefinition],
     fetch: mockFetch, // Required for unit tests
-    walletPlugins: [new WalletPluginTEMPLATE()],
+    walletPlugins: [
+        new WalletPluginPrivateKey({
+            privateKey: mockPrivateKey,
+        }),
+    ],
 }
 
 suite('wallet plugin', function () {
