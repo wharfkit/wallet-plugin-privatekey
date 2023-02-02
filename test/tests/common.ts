@@ -25,6 +25,15 @@ const mockSessionKitOptions = {
 }
 
 suite('wallet plugin', function () {
+    test('construct', function () {
+        const wallet = new WalletPluginPrivateKey({privateKey: mockPrivateKey})
+        assert.instanceOf(wallet, WalletPluginPrivateKey)
+    })
+    test('throws error with invalid privatekey', function () {
+        assert.throws(() => {
+            new WalletPluginPrivateKey({privateKey: 'foo'})
+        }, Error)
+    })
     test('login and sign', async function () {
         const kit = new SessionKit(mockSessionKitOptions)
         const {session} = await kit.login({
