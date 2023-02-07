@@ -1,5 +1,4 @@
 import {
-    ChainDefinition,
     Checksum256,
     LoginContext,
     PrivateKey,
