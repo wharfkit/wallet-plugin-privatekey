@@ -1,10 +1,12 @@
 import {
     ChainDefinition,
     Checksum256,
+    LoginContext,
     PrivateKey,
     PrivateKeyType,
     ResolvedSigningRequest,
     Signature,
+    TransactContext,
     Transaction,
     WalletPlugin,
     WalletPluginConfig,
@@ -30,11 +32,15 @@ export class WalletPluginPrivateKey implements WalletPlugin {
     privateKey: PrivateKey
     constructor(options: WalletPluginPrivateKeyOptions) {
         this.privateKey = PrivateKey.from(options.privateKey)
-        this.metadata.description = `An unsecured wallet that can sign for authorities using the ${String(
-            this.privateKey.toPublic()
-        )} public key.`
+        const pubkey = String(this.privateKey.toPublic())
+        this.metadata.description = `An unsecured wallet that can sign for authorities using the ${
+            pubkey.substring(0, 11) + '...' + pubkey.substring(pubkey.length - 4, pubkey.length)
+        } public key.`
     }
-    async login(options: WalletPluginLoginOptions): Promise<WalletPluginLoginResponse> {
+    async login(
+        context: LoginContext,
+        options: WalletPluginLoginOptions
+    ): Promise<WalletPluginLoginResponse> {
         let chain: Checksum256
         if (options.chain) {
             chain = options.chain.id
@@ -51,9 +57,9 @@ export class WalletPluginPrivateKey implements WalletPlugin {
             permissionLevel: options.permissionLevel,
         }
     }
-    async sign(chain: ChainDefinition, resolved: ResolvedSigningRequest): Promise<Signature> {
+    async sign(resolved: ResolvedSigningRequest, context: TransactContext): Promise<Signature> {
         const transaction = Transaction.from(resolved.transaction)
-        const digest = transaction.signingDigest(Checksum256.from(chain.id))
+        const digest = transaction.signingDigest(Checksum256.from(context.chain.id))
         return this.privateKey.signDigest(digest)
     }
 }
