@@ -4,7 +4,6 @@ import {
     PrivateKey,
     PrivateKeyType,
     ResolvedSigningRequest,
-    Signature,
     TransactContext,
     Transaction,
     WalletPlugin,
@@ -13,6 +12,7 @@ import {
     WalletPluginLoginResponse,
     WalletPluginMetadata,
     WalletPluginOptions,
+    WalletPluginSignResponse,
 } from '@wharfkit/session'
 
 export interface WalletPluginPrivateKeyOptions extends WalletPluginOptions {
@@ -56,9 +56,15 @@ export class WalletPluginPrivateKey implements WalletPlugin {
             permissionLevel: options.permissionLevel,
         }
     }
-    async sign(resolved: ResolvedSigningRequest, context: TransactContext): Promise<Signature> {
+    async sign(
+        resolved: ResolvedSigningRequest,
+        context: TransactContext
+    ): Promise<WalletPluginSignResponse> {
         const transaction = Transaction.from(resolved.transaction)
         const digest = transaction.signingDigest(Checksum256.from(context.chain.id))
-        return this.privateKey.signDigest(digest)
+        const signature = this.privateKey.signDigest(digest)
+        return {
+            signatures: [signature],
+        }
     }
 }
