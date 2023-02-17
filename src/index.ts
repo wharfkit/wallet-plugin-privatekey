@@ -1,4 +1,5 @@
 import {
+    AbstractWalletPlugin,
     Checksum256,
     LoginContext,
     PrivateKey,
@@ -19,7 +20,7 @@ export interface WalletPluginPrivateKeyOptions extends WalletPluginOptions {
     privateKey: PrivateKeyType
 }
 
-export class WalletPluginPrivateKey implements WalletPlugin {
+export class WalletPluginPrivateKey extends AbstractWalletPlugin implements WalletPlugin {
     readonly config: WalletPluginConfig = {
         requiresChainSelect: true,
         requiresPermissionSelect: true,
@@ -28,13 +29,22 @@ export class WalletPluginPrivateKey implements WalletPlugin {
         name: 'Private Key Signer',
         description: '',
     }
-    privateKey: PrivateKey
+    private options: WalletPluginPrivateKeyOptions
+    readonly privateKey: PrivateKey
     constructor(options: WalletPluginPrivateKeyOptions) {
+        super()
+        this.options = options
         this.privateKey = PrivateKey.from(options.privateKey)
         const pubkey = String(this.privateKey.toPublic())
         this.metadata.description = `An unsecured wallet that can sign for authorities using the ${
             pubkey.substring(0, 11) + '...' + pubkey.substring(pubkey.length - 4, pubkey.length)
         } public key.`
+    }
+    get name(): string {
+        return 'WalletPluginPrivateKey'
+    }
+    get data(): Record<string, any> {
+        return this.options
     }
     async login(
         context: LoginContext,
