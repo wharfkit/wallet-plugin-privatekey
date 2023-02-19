@@ -9,14 +9,12 @@ import {
     Transaction,
     WalletPlugin,
     WalletPluginConfig,
-    WalletPluginLoginOptions,
     WalletPluginLoginResponse,
     WalletPluginMetadata,
-    WalletPluginOptions,
     WalletPluginSignResponse,
 } from '@wharfkit/session'
 
-export interface WalletPluginPrivateKeyOptions extends WalletPluginOptions {
+export interface WalletPluginPrivateKeyOptions {
     privateKey: PrivateKeyType
 }
 
@@ -35,35 +33,37 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
         super()
         this.options = options
         this.privateKey = PrivateKey.from(options.privateKey)
-        const pubkey = String(this.privateKey.toPublic())
+        this.metadata.publicKey = this.privateKey.toPublic()
         this.metadata.description = `An unsecured wallet that can sign for authorities using the ${
-            pubkey.substring(0, 11) + '...' + pubkey.substring(pubkey.length - 4, pubkey.length)
+            String(this.metadata.publicKey).substring(0, 11) +
+            '...' +
+            String(this.metadata.publicKey).substring(
+                String(this.metadata.publicKey).length - 4,
+                String(this.metadata.publicKey).length
+            )
         } public key.`
     }
-    get name(): string {
-        return 'WalletPluginPrivateKey'
+    get id(): string {
+        return 'keysigner'
     }
     get data(): Record<string, any> {
         return this.options
     }
-    async login(
-        context: LoginContext,
-        options: WalletPluginLoginOptions
-    ): Promise<WalletPluginLoginResponse> {
+    async login(context: LoginContext): Promise<WalletPluginLoginResponse> {
         let chain: Checksum256
-        if (options.chain) {
-            chain = options.chain.id
+        if (context.chain) {
+            chain = context.chain.id
         } else {
-            chain = options.chains[0].id
+            chain = context.chains[0].id
         }
-        if (!options.permissionLevel) {
+        if (!context.permissionLevel) {
             throw new Error(
                 'Calling login() without a permissionLevel is not supported by the WalletPluginPrivateKey plugin.'
             )
         }
         return {
             chain,
-            permissionLevel: options.permissionLevel,
+            permissionLevel: context.permissionLevel,
         }
     }
     async sign(
