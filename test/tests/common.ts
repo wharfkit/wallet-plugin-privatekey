@@ -1,5 +1,5 @@
 import {assert} from 'chai'
-import {PermissionLevel, SessionKit} from '@wharfkit/session'
+import {PermissionLevel, PrivateKey, SessionKit} from '@wharfkit/session'
 
 import {WalletPluginPrivateKey} from '$lib'
 import {mockFetch} from '$test/utils/mock-fetch'
@@ -21,21 +21,21 @@ const mockSessionKitOptions = {
     fetch: mockFetch, // Required for unit tests
     storage: new MockStorage(),
     ui: new MockUserInterface(),
-    walletPlugins: [
-        new WalletPluginPrivateKey({
-            privateKey: mockPrivateKey,
-        }),
-    ],
+    walletPlugins: [new WalletPluginPrivateKey(mockPrivateKey)],
 }
 
 suite('wallet plugin', function () {
-    test('construct', function () {
-        const wallet = new WalletPluginPrivateKey({privateKey: mockPrivateKey})
+    test('construct (typed)', function () {
+        const wallet = new WalletPluginPrivateKey(PrivateKey.from(mockPrivateKey))
+        assert.instanceOf(wallet, WalletPluginPrivateKey)
+    })
+    test('construct (untyped)', function () {
+        const wallet = new WalletPluginPrivateKey(mockPrivateKey)
         assert.instanceOf(wallet, WalletPluginPrivateKey)
     })
     test('throws error with invalid privatekey', function () {
         assert.throws(() => {
-            new WalletPluginPrivateKey({privateKey: 'foo'})
+            new WalletPluginPrivateKey('foo')
         }, Error)
     })
     test('login and sign', async function () {
@@ -67,5 +67,23 @@ suite('wallet plugin', function () {
         )
         assert.isTrue(result.signer.equals(mockPermissionLevel))
         assert.equal(result.signatures.length, 1)
+    })
+    test('serializes properly', async function () {
+        const kit = new SessionKit(mockSessionKitOptions)
+        const {session} = await kit.login({
+            chain: mockChainDefinition.id,
+            permissionLevel: mockPermissionLevel,
+        })
+        assert.deepEqual(session.serialize(), {
+            chain: '73e4385a2708e6d7048834fbc1079f2fabb17b3c125b146af438971e90716c4d',
+            actor: 'wharfkit1115',
+            permission: 'test',
+            walletPlugin: {
+                id: 'keysigner',
+                data: {
+                    privateKey: 'PVT_K1_25XP1Lt1Rt87hyymouSieBbgnUEAerS1yQHi9wqHC2Uek2mgzH',
+                },
+            },
+        })
     })
 })

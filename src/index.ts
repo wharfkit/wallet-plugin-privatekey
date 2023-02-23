@@ -27,13 +27,9 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
         name: 'Private Key Signer',
         description: '',
     }
-    private options: WalletPluginPrivateKeyOptions
-    readonly privateKey: PrivateKey
-    constructor(options: WalletPluginPrivateKeyOptions) {
+    constructor(privateKey: PrivateKeyType) {
         super()
-        this.options = options
-        this.privateKey = PrivateKey.from(options.privateKey)
-        this.metadata.publicKey = this.privateKey.toPublic()
+        this.data.privateKey = PrivateKey.from(privateKey)
         this.metadata.description = `An unsecured wallet that can sign for authorities using the ${
             String(this.metadata.publicKey).substring(0, 11) +
             '...' +
@@ -45,9 +41,6 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
     }
     get id(): string {
         return 'keysigner'
-    }
-    get data(): Record<string, any> {
-        return this.options
     }
     async login(context: LoginContext): Promise<WalletPluginLoginResponse> {
         let chain: Checksum256
@@ -72,7 +65,8 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
     ): Promise<WalletPluginSignResponse> {
         const transaction = Transaction.from(resolved.transaction)
         const digest = transaction.signingDigest(Checksum256.from(context.chain.id))
-        const signature = this.privateKey.signDigest(digest)
+        const privateKey = PrivateKey.from(this.data.privateKey)
+        const signature = privateKey.signDigest(digest)
         return {
             signatures: [signature],
         }
