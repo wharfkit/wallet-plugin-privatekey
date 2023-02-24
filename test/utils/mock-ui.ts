@@ -1,8 +1,11 @@
 import {
+    cancelable,
+    Cancelable,
     Checksum256,
     LoginContext,
     LoginOptions,
     PermissionLevel,
+    PromptArgs,
     PromptResponse,
     UserInterface,
     UserInterfaceLoginResponse,
@@ -50,9 +53,12 @@ export class MockUserInterface implements UserInterface {
     async onTransactResult() {
         this.log('onTransactResult')
     }
-    async prompt(args): Promise<PromptResponse> {
+    prompt(args: PromptArgs): Cancelable<PromptResponse> {
         this.log('prompt' + JSON.stringify(args))
-        return {}
+        return cancelable(new Promise(() => {}), (canceled) => {
+            // do things to cancel promise
+            throw canceled
+        })
     }
     status(message: string) {
         this.log(`status:('${message}')`)

@@ -27,15 +27,17 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
         name: 'Private Key Signer',
         description: '',
     }
-    constructor(privateKey: PrivateKeyType) {
+    constructor(privateKeyData: PrivateKeyType) {
         super()
-        this.data.privateKey = PrivateKey.from(privateKey)
+        const privateKey = PrivateKey.from(privateKeyData)
+        this.data.privateKey = privateKey
+        this.metadata.publicKey = privateKey.toPublic()
         this.metadata.description = `An unsecured wallet that can sign for authorities using the ${
-            String(this.metadata.publicKey).substring(0, 11) +
+            String(this.data.publicKey).substring(0, 11) +
             '...' +
-            String(this.metadata.publicKey).substring(
-                String(this.metadata.publicKey).length - 4,
-                String(this.metadata.publicKey).length
+            String(this.data.publicKey).substring(
+                String(this.data.publicKey).length - 4,
+                String(this.data.publicKey).length
             )
         } public key.`
     }
