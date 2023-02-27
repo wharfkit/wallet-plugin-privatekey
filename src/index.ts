@@ -1,5 +1,7 @@
 import {
     AbstractWalletPlugin,
+    cancelable,
+    Cancelable,
     Checksum256,
     LoginContext,
     PrivateKey,
@@ -44,33 +46,41 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
     get id(): string {
         return 'keysigner'
     }
-    async login(context: LoginContext): Promise<WalletPluginLoginResponse> {
+    login(context: LoginContext): Cancelable<WalletPluginLoginResponse> {
         let chain: Checksum256
         if (context.chain) {
             chain = context.chain.id
         } else {
             chain = context.chains[0].id
         }
-        if (!context.permissionLevel) {
-            throw new Error(
-                'Calling login() without a permissionLevel is not supported by the WalletPluginPrivateKey plugin.'
-            )
-        }
-        return {
-            chain,
-            permissionLevel: context.permissionLevel,
-        }
+        return cancelable(
+            new Promise((resolve, reject) => {
+                if (!context.permissionLevel) {
+                    return reject(
+                        'Calling login() without a permissionLevel is not supported by the WalletPluginPrivateKey plugin.'
+                    )
+                }
+                resolve({
+                    chain,
+                    permissionLevel: context.permissionLevel,
+                })
+            })
+        )
     }
-    async sign(
+    sign(
         resolved: ResolvedSigningRequest,
         context: TransactContext
-    ): Promise<WalletPluginSignResponse> {
-        const transaction = Transaction.from(resolved.transaction)
-        const digest = transaction.signingDigest(Checksum256.from(context.chain.id))
-        const privateKey = PrivateKey.from(this.data.privateKey)
-        const signature = privateKey.signDigest(digest)
-        return {
-            signatures: [signature],
-        }
+    ): Cancelable<WalletPluginSignResponse> {
+        return cancelable(
+            new Promise((resolve) => {
+                const transaction = Transaction.from(resolved.transaction)
+                const digest = transaction.signingDigest(Checksum256.from(context.chain.id))
+                const privateKey = PrivateKey.from(this.data.privateKey)
+                const signature = privateKey.signDigest(digest)
+                resolve({
+                    signatures: [signature],
+                })
+            })
+        )
     }
 }
