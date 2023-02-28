@@ -21,6 +21,7 @@ export interface WalletPluginPrivateKeyOptions {
 }
 
 export class WalletPluginPrivateKey extends AbstractWalletPlugin implements WalletPlugin {
+    public id = 'wallet-plugin-privatekey'
     readonly config: WalletPluginConfig = {
         requiresChainSelect: true,
         requiresPermissionSelect: true,
@@ -42,9 +43,6 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
                 String(this.data.publicKey).length
             )
         } public key.`
-    }
-    get id(): string {
-        return 'keysigner'
     }
     login(context: LoginContext): Cancelable<WalletPluginLoginResponse> {
         let chain: Checksum256
