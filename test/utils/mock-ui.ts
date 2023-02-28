@@ -1,4 +1,5 @@
 import {
+    AbstractUserInterface,
     cancelable,
     Cancelable,
     Checksum256,
@@ -11,7 +12,7 @@ import {
     UserInterfaceLoginResponse,
 } from '@wharfkit/session'
 
-export class MockUserInterface implements UserInterface {
+export class MockUserInterface extends AbstractUserInterface implements UserInterface {
     readonly logging = false
     messages: string[] = []
     log(message: string) {
@@ -42,16 +43,26 @@ export class MockUserInterface implements UserInterface {
     async onLogin(options?: LoginOptions) {
         this.log('onLogin: ' + JSON.stringify(options))
     }
-    async onLoginResult() {
-        this.log('onLoginResult')
+    async onLoginComplete() {
+        this.log('onLoginComplete')
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async onTransact() {
-        this.log('onTransactResult')
+        this.log('onTransactComplete')
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async onTransactResult() {
-        this.log('onTransactResult')
+    async onTransactComplete() {
+        this.log('onTransactComplete')
+    }
+    async onSign() {
+        this.log('onSign')
+    }
+    async onSignComplete() {
+        this.log('onSignComplete')
+    }
+    async onBroadcast() {
+        this.log('onBroadcast')
+    }
+    async onBroadcastComplete() {
+        this.log('onBroadcastComplete')
     }
     prompt(args: PromptArgs): Cancelable<PromptResponse> {
         this.log('prompt' + JSON.stringify(args))
@@ -62,5 +73,8 @@ export class MockUserInterface implements UserInterface {
     }
     status(message: string) {
         this.log(`status:('${message}')`)
+    }
+    addTranslations(): void {
+        this.log('addTranslations')
     }
 }
