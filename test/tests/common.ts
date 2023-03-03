@@ -79,7 +79,7 @@ suite('wallet plugin', function () {
             actor: 'wharfkit1115',
             permission: 'test',
             walletPlugin: {
-                id: 'keysigner',
+                id: 'wallet-plugin-privatekey',
                 data: {
                     privateKey: 'PVT_K1_25XP1Lt1Rt87hyymouSieBbgnUEAerS1yQHi9wqHC2Uek2mgzH',
                 },
