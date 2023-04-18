@@ -26,15 +26,15 @@ export class WalletPluginPrivateKey extends AbstractWalletPlugin implements Wall
         requiresChainSelect: true,
         requiresPermissionSelect: true,
     }
-    readonly metadata: WalletPluginMetadata = {
+    readonly metadata: WalletPluginMetadata = WalletPluginMetadata.from({
         name: 'Private Key Signer',
         description: '',
-    }
+    })
     constructor(privateKeyData: PrivateKeyType) {
         super()
         const privateKey = PrivateKey.from(privateKeyData)
         this.data.privateKey = privateKey
-        this.metadata.publicKey = privateKey.toPublic()
+        this.metadata.publicKey = String(privateKey.toPublic())
         this.metadata.description = `An unsecured wallet that can sign for authorities using the ${
             String(this.data.publicKey).substring(0, 11) +
             '...' +
