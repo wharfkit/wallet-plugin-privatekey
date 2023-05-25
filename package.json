@@ -1,7 +1,7 @@
 {
     "name": "@wharfkit/wallet-plugin-privatekey",
     "description": "A template to create wallet plugins for use with @wharfkit/session.",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "homepage": "https://github.com/wharfkit/wallet-plugin-privatekey",
     "license": "BSD-3-Clause",
     "main": "lib/wallet-plugin-privatekey.js",
@@ -19,7 +19,7 @@
         "tslib": "^2.1.0"
     },
     "peerDependencies": {
-        "@wharfkit/session": "^0.3.0"
+        "@wharfkit/session": "^0.4.0"
     },
     "devDependencies": {
         "@rollup/plugin-alias": "^3.1.4",
