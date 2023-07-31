@@ -15,13 +15,15 @@ const mockPermissionLevel = PermissionLevel.from('wharfkit1115@test')
 
 const mockPrivateKey = '5Jtoxgny5tT7NiNFp1MLogviuPJ9NniWjnU4wKzaX4t7pL4kJ8s'
 
-const mockSessionKitOptions = {
+const mockSessionKitArgs = {
     appName: 'unittests',
     chains: [mockChainDefinition],
-    fetch: mockFetch, // Required for unit tests
-    storage: new MockStorage(),
     ui: new MockUserInterface(),
     walletPlugins: [new WalletPluginPrivateKey(mockPrivateKey)],
+}
+
+const mockSessionKitOptions = {
+    fetch: mockFetch, // Required for unit tests
 }
 
 suite('wallet plugin', function () {
@@ -39,7 +41,7 @@ suite('wallet plugin', function () {
         }, Error)
     })
     test('login and sign', async function () {
-        const kit = new SessionKit(mockSessionKitOptions)
+        const kit = new SessionKit(mockSessionKitArgs, mockSessionKitOptions)
         const {session} = await kit.login({
             chain: mockChainDefinition.id,
             permissionLevel: mockPermissionLevel,
@@ -69,7 +71,7 @@ suite('wallet plugin', function () {
         assert.equal(result.signatures.length, 1)
     })
     test('serializes properly', async function () {
-        const kit = new SessionKit(mockSessionKitOptions)
+        const kit = new SessionKit(mockSessionKitArgs, mockSessionKitOptions)
         const {session} = await kit.login({
             chain: mockChainDefinition.id,
             permissionLevel: mockPermissionLevel,
