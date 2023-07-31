@@ -568,10 +568,10 @@
   dependencies:
     tslib "^2.1.0"
 
-"@wharfkit/session@^1.0.0-beta9":
-  version "1.0.0-beta9"
-  resolved "https://registry.yarnpkg.com/@wharfkit/session/-/session-1.0.0-beta9.tgz#854c7b019658328169e0893ab98b6b1efabe0edc"
-  integrity sha512-ixPX0MrE/5vwxYym2j82lVVsEJSaCAHqgjd05AV/Iv+2o9QlTulN1LaAajCKJXzyT1bMwyI2dP+v7+dgKlVtRA==
+"@wharfkit/session@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@wharfkit/session/-/session-1.0.0.tgz#09c60d01a6185ab2e451d34462d84de2d7013220"
+  integrity sha512-wXmvOVBZ1Rp/9HPUzGPaD/vpGXv2FCNgl8JRLopKgKPHkkEX/u4untshHR8AwSc0ZitjOlv6ubR2h9/UW8h6ug==
   dependencies:
     "@wharfkit/abicache" "^1.1.1"
     "@wharfkit/antelope" "^0.7.3"
