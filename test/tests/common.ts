@@ -4,7 +4,7 @@ import {PermissionLevel, PrivateKey, SessionKit} from '@wharfkit/session'
 import {WalletPluginPrivateKey} from '$lib'
 import {mockFetch} from '$test/utils/mock-fetch'
 import {MockStorage} from '$test/utils/mock-storage'
-import {MockUserInterface} from '$test/utils/mock-ui'
+import {MockUserInterface} from '@wharfkit/mock-data'
 
 const mockChainDefinition = {
     id: '73e4385a2708e6d7048834fbc1079f2fabb17b3c125b146af438971e90716c4d',
